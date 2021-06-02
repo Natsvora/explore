@@ -1,7 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import blockReducer from './blockSlice';
+import transactionReducer from './trasactionSlice';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    block: blockReducer,
+    transaction: transactionReducer,
+  },
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 export type AppDispatch = typeof store.dispatch;
