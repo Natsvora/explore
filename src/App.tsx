@@ -1,24 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import React from 'react';
 import './App.css';
-import useLoadProvider from './common/hooks/useProvider';
-import useLoadTx from './common/hooks/useLoadTx';
-import { useAppDispatch } from './common/hooks/useAppDispatch';
-import { fetchTransactionAsync } from './store/trasactionSlice';
+import Navbar from './component/Navbar/Navbar';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
+import { ThemeProvider } from '@material-ui/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import Transaction from './component/Transaction/Transaction';
+import Block from './component/Block/Block';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { purple } from '@material-ui/core/colors';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: purple[900],
+    },
+    secondary: {
+      main: '#7c43bd',
+    },
+  },
+});
 
 function App(): JSX.Element {
-  useLoadTx();
-
-  const dispatch = useAppDispatch();
-
-  const handelClick = () => {
-    dispatch(fetchTransactionAsync(12556249));
-  };
-
   return (
-    <div className='App'>
-      <button onClick={handelClick}>Get Tx</button>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <div className='App'>
+          <Navbar></Navbar>
+          <Switch>
+            <Route exact path='/' render={() => <Redirect to='/block' />} />
+            <Route exact path='/block'>
+              <Block />
+            </Route>
+            <Route exact path='/txn/:id?'>
+              <Transaction />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

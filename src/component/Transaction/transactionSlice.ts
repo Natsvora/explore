@@ -1,21 +1,13 @@
-import { TransactionResponse } from '@ethersproject/providers';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
+import {
+  SerializeTransactionResponse,
+  TransactionState,
+} from './transaction.types';
 
 const provider = new ethers.providers.Web3Provider(
   (window as { [key: string]: any }).ethereum
 );
-
-//TODO:
-type TransactionResponseTemp = Omit<TransactionResponse, 'gasPrice'>;
-
-export interface SerializeTransactionResponse extends TransactionResponseTemp {
-  gasPrice: number;
-}
-
-export interface TransactionState {
-  transactions: SerializeTransactionResponse[];
-}
 
 const initialState: TransactionState = {
   transactions: [],
@@ -33,7 +25,13 @@ export const fetchTransactionAsync = createAsyncThunk(
       txList.transactions.forEach((transaction) => {
         txs.push({
           ...transaction,
+          //transactionIndex is not present in its type class
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          id: (transaction as any).transactionIndex,
+          timestamp: txList.timestamp,
           gasPrice: transaction.gasPrice.toNumber(),
+          gasLimit: transaction.gasLimit.toNumber(),
+          value: transaction.value.toHexString(),
         });
       });
     } catch (e) {
@@ -50,12 +48,18 @@ export const fetchTransactionAsync = createAsyncThunk(
 export const transactionSlice = createSlice({
   name: 'block',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteTransactions: (state) => {
+      state.transactions = [];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchTransactionAsync.fulfilled, (state, action) => {
       state.transactions = action.payload;
     });
   },
 });
+
+export const { deleteTransactions } = transactionSlice.actions;
 
 export default transactionSlice.reducer;

@@ -1,3 +1,3 @@
-interface ICustomWindow extends Window {
+export interface ICustomWindow extends Window {
   ethereum?: ExternalProvider;
 }
