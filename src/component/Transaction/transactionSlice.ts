@@ -18,9 +18,11 @@ const initialState: TransactionState = {
  */
 export const fetchTransactionAsync = createAsyncThunk(
   'transaction/fetchTransaction',
-  async (id: number) => {
+  async (id?: number) => {
     const txs: Array<SerializeTransactionResponse> = [];
     try {
+      // if no id provided it will fetch transaction for latest block
+      if (!id) id = await provider.getBlockNumber();
       const txList = await provider.getBlockWithTransactions(id);
       txList.transactions.forEach((transaction) => {
         txs.push({

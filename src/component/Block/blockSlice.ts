@@ -31,6 +31,34 @@ export const fetchBlockAsync = createAsyncThunk(
 );
 
 /**
+ * Fetch previous 15 blocks data
+ */
+export const fetchPreviousBlocksAsync = createAsyncThunk(
+  'block/fetchPreviousBlocks',
+  async (noOfBlocks: number) => {
+    try {
+      const previousBlocks: SerializeBlock[] = [];
+      // fetching current block number
+      const currentBlock = await provider.getBlockNumber();
+      for (let i = currentBlock - noOfBlocks - 1; i < currentBlock; i++) {
+        const block = await provider.getBlock(i);
+        previousBlocks.push({
+          ...block,
+          id: block.number,
+          gasLimit: block.gasLimit.toNumber(),
+          gasUsed: block.gasUsed.toNumber(),
+          noOfTransactions: block.transactions.length,
+        });
+      }
+      return previousBlocks;
+    } catch (e) {
+      console.log(e);
+    }
+    return [];
+  }
+);
+
+/**
  * Create block slice
  */
 export const blockSlice = createSlice({
@@ -42,15 +70,21 @@ export const blockSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchBlockAsync.fulfilled, (state, action) => {
-      state.blocks.push(action.payload);
-      if (state.blocks.length > 10) {
-        state.blocks = state.blocks.filter(
-          (block) => block.number > action.payload.number - 15
+    builder
+      .addCase(fetchBlockAsync.fulfilled, (state, action) => {
+        state.blocks.push(action.payload);
+        if (state.blocks.length > 10) {
+          state.blocks = state.blocks.filter(
+            (block) => block.number > action.payload.number - 15
+          );
+        }
+        state.blocks.sort((data1, data2) => data2.number - data1.number);
+      })
+      .addCase(fetchPreviousBlocksAsync.fulfilled, (state, action) => {
+        state.blocks = action.payload.sort(
+          (data1, data2) => data2.number - data1.number
         );
-      }
-      state.blocks.sort((data1, data2) => data2.number - data1.number);
-    });
+      });
   },
 });
 

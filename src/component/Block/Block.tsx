@@ -1,18 +1,23 @@
 import React from 'react';
 import DataTable from '../DataTable/DataTable';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
-import { useAppSelector } from '../../common/hooks/useAppDispatch';
 import useLoadBlocks from '../../common/hooks/useLoadBlocks';
 import TimeAgo from 'react-timeago';
 import { Link } from 'react-router-dom';
 import { GridColDef } from '@material-ui/data-grid';
+import Badge from '@material-ui/core/Badge';
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/styles';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import BreadcrumbLink from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
+import { useAppSelector } from '../../common/hooks/useAppDispatch';
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      // background: 'linear-gradient(45deg, #9013FE 15%, #50E3C2 90%)',
       minWidth: '100%',
       minHeight: '90vh',
       display: 'flex',
@@ -28,8 +33,22 @@ const useStyles = makeStyles(() =>
     link: {
       textDecoration: 'none',
     },
+    breadCrumbs: {
+      margin: theme.spacing(1, 2, 2, 2),
+      width: '95vw',
+    },
   })
 );
+
+const StyledBadge = withStyles((theme: Theme) =>
+  createStyles({
+    badge: {
+      background: theme.palette.secondary.main,
+      border: `2px solid ${theme.palette.secondary.main}`,
+      padding: '15px 20px',
+    },
+  })
+)(Badge);
 
 const columns: GridColDef[] = [
   {
@@ -53,7 +72,17 @@ const columns: GridColDef[] = [
     headerAlign: 'center',
     type: 'link',
     renderCell: function getAge(data) {
-      return <Link to={`/txn/${data.row.id}`}>{data.value}</Link>;
+      return (
+        <Link to={`/txn/${data.row.id}`}>
+          <IconButton aria-label='cart'>
+            <StyledBadge
+              badgeContent={data.value ? data.value : '0'}
+              color='secondary'
+              max={99999}
+            ></StyledBadge>
+          </IconButton>
+        </Link>
+      );
     },
     width: 200,
   },
@@ -62,6 +91,7 @@ const columns: GridColDef[] = [
     headerName: 'Miner',
     headerAlign: 'center',
     width: 500,
+    sortable: false,
   },
   {
     field: 'gasUsed',
@@ -81,6 +111,7 @@ const columns: GridColDef[] = [
 
 export default function Block(): JSX.Element {
   useLoadBlocks();
+
   const classes = useStyles();
   let blocks = useAppSelector((state) => state.block.blocks);
   blocks = blocks?.slice(0, 10);
@@ -92,6 +123,13 @@ export default function Block(): JSX.Element {
       alignItems='center'
       justify='center'
     >
+      <Breadcrumbs aria-label='breadcrumb' className={classes.breadCrumbs}>
+        <BreadcrumbLink color='inherit' href='/block'>
+          Transactions
+        </BreadcrumbLink>
+        <Typography color='textPrimary'>Block : {blocks[0]?.id}</Typography>
+      </Breadcrumbs>
+
       <Card className={classes.card}>
         <div style={{ height: '100%', width: '100%' }}>
           <div style={{ display: 'flex', height: '100%' }}>
@@ -101,6 +139,7 @@ export default function Block(): JSX.Element {
               options={{
                 disableFilter: true,
                 disablePagination: true,
+                loading: blocks.length < 9,
               }}
             />
           </div>

@@ -19,12 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
     },
-    title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
-    },
     grow: {
       flexGrow: 0.9,
     },
@@ -32,12 +26,22 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       padding: 0,
+      '& .Mui-selected,& .Mui-selected:hover': {
+        '& .MuiSvgIcon-root,& .MuiTypography-root': {
+          color: theme.palette.primary.dark,
+          fontWeight: 'bold',
+        },
+        backgroundColor: theme.palette.common.white,
+      },
     },
     link: {
       margin: theme.spacing(1),
     },
     icon: {
       color: fade(theme.palette.common.white, 0.85),
+    },
+    header: {
+      backgroundColor: theme.palette.primary.dark,
     },
   })
 );
@@ -46,11 +50,9 @@ const Navbar = (): JSX.Element => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <AppBar position='static'>
+      <AppBar position='static' className={classes.header}>
         <Toolbar>
-          <Typography variant='h6' className={classes.title}>
-            Block Explore
-          </Typography>
+          <Typography variant='h6'>Block Explore</Typography>
           <div className={classes.grow} />
           <List className={classes.list}>
             <ListItem
@@ -69,10 +71,9 @@ const Navbar = (): JSX.Element => {
             <ListItem
               button
               component={NavLink}
-              to='/txn?'
+              to='/txn'
               className={classes.link}
               activeClassName='Mui-selected'
-              exact
             >
               <ListItemIcon>
                 <SendIcon className={classes.icon} />

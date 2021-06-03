@@ -12,16 +12,21 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import Transaction from './component/Transaction/Transaction';
 import Block from './component/Block/Block';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { purple } from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: purple[900],
+      main: '#1a237e',
     },
     secondary: {
-      main: '#7c43bd',
+      main: '#1976d2',
     },
+    background: {
+      default: '#f7f7f7',
+    },
+  },
+  typography: {
+    fontSize: 16,
   },
 });
 
@@ -30,18 +35,16 @@ function App(): JSX.Element {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <div className='App'>
-          <Navbar></Navbar>
-          <Switch>
-            <Route exact path='/' render={() => <Redirect to='/block' />} />
-            <Route exact path='/block'>
-              <Block />
-            </Route>
-            <Route exact path='/txn/:id?'>
-              <Transaction />
-            </Route>
-          </Switch>
-        </div>
+        <Navbar></Navbar>
+        <Switch>
+          <Route exact path='/' render={() => <Redirect to='/block' />} />
+          <Route exact path='/block'>
+            <Block />
+          </Route>
+          <Route path='/txn/:id?'>
+            <Transaction />
+          </Route>
+        </Switch>
       </Router>
     </ThemeProvider>
   );

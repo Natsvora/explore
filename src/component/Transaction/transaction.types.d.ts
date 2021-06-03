@@ -15,3 +15,7 @@ export interface SerializeTransactionResponse extends TransactionResponseTemp {
 export interface TransactionState {
   transactions: SerializeTransactionResponse[];
 }
+
+export interface TransactionProps {
+  id?: string | undefined;
+}
