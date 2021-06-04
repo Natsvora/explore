@@ -1,3 +1,4 @@
+import { ACTION } from './../../common/constant';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
 import {
@@ -23,7 +24,7 @@ const initialState: TransactionState = {
  * Fetching transaction data async
  */
 export const fetchTransactionAsync = createAsyncThunk(
-  'transaction/fetchTransaction',
+  ACTION.TRANSACTION_FETCH,
   async (id?: number) => {
     const txs: Array<SerializeTransactionResponse> = [];
     try {
@@ -43,8 +44,7 @@ export const fetchTransactionAsync = createAsyncThunk(
         });
       });
     } catch (e) {
-      //TODO:
-      console.log(e);
+      //error
     }
     return txs;
   }

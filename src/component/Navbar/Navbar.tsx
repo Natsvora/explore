@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
+      overflow: 'hidden',
     },
     grow: {
       flexGrow: 0.9,
@@ -33,8 +34,15 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         backgroundColor: theme.palette.common.white,
       },
+      [theme.breakpoints.down(780)]: {
+        flexDirection: 'column',
+      },
     },
     link: {
+      width: '100%',
+      [theme.breakpoints.down(780)]: {
+        width: '90%',
+      },
       margin: theme.spacing(1),
     },
     icon: {
@@ -52,7 +60,19 @@ const Navbar = (): JSX.Element => {
     <div className={classes.root}>
       <AppBar position='static' className={classes.header}>
         <Toolbar>
-          <Typography variant='h6'>Block Explore</Typography>
+          <Typography variant='h6'>
+            <List className={classes.list}>
+              <ListItem
+                button
+                component={NavLink}
+                to='/'
+                className={classes.link}
+                exact
+              >
+                Block Explore
+              </ListItem>
+            </List>
+          </Typography>
           <div className={classes.grow} />
           <List className={classes.list}>
             <ListItem

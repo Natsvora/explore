@@ -1,6 +1,7 @@
 import { Block } from '@ethersproject/providers';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
+import { ACTION } from '../../common/constant';
 import { BlockState, SerializeBlock } from './block.types';
 
 let provider = ethers.providers.getDefaultProvider();
@@ -21,7 +22,7 @@ const initialState: BlockState = {
  * Fetch block data async
  */
 export const fetchBlockAsync = createAsyncThunk(
-  'block/fetchBlock',
+  ACTION.BLOCK_FETCH,
   async (id: string) => {
     const block: Block = await provider.getBlock(id);
     const data: SerializeBlock = {
@@ -39,7 +40,7 @@ export const fetchBlockAsync = createAsyncThunk(
  * Fetch previous 15 blocks data
  */
 export const fetchPreviousBlocksAsync = createAsyncThunk(
-  'block/fetchPreviousBlocks',
+  ACTION.BLOCK_FETCH_PREVIOUS,
   async (noOfBlocks: number) => {
     try {
       const previousBlocks: SerializeBlock[] = [];
@@ -57,7 +58,7 @@ export const fetchPreviousBlocksAsync = createAsyncThunk(
       }
       return previousBlocks;
     } catch (e) {
-      console.log(e);
+      // error
     }
     return [];
   }
