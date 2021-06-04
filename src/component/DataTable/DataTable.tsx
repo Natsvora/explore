@@ -6,11 +6,13 @@ import {
   GridToolbarExport,
   GridToolbarFilterButton,
   GridCellParams,
+  GridPagination,
 } from '@material-ui/data-grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { isWidthUp, Tooltip, withWidth } from '@material-ui/core';
 import { COLUMN_TYPE } from '../../common/constant';
 import { defaultProps } from './dataTable.type';
+import Grid from '@material-ui/core/Grid';
 
 /**
  * Creating custom toolbar
@@ -39,12 +41,18 @@ function CustomLoadingOverlay() {
   );
 }
 
-function CustomFooter(data: string) {
+function CustomFooter(data: string, withPagination = false) {
   return (
-    <div className='MuiDataGrid-selectedRowCount'>
-      {' '}
-      <h3>{data}</h3>
-    </div>
+    <>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          <h3>{data}</h3>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          {withPagination && <GridPagination />}
+        </Grid>
+      </Grid>
+    </>
   );
 }
 
@@ -89,7 +97,11 @@ function DataTable(props: defaultProps): JSX.Element {
         Toolbar: props.options?.customFilter ? CustomToolbar : undefined,
         LoadingOverlay: CustomLoadingOverlay,
         Footer: props.note
-          ? () => CustomFooter(props.note as string)
+          ? () =>
+              CustomFooter(
+                props.note as string,
+                !props.options?.disablePagination
+              )
           : undefined,
       }}
       onCellDoubleClick={(a) =>
