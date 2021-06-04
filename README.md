@@ -1,6 +1,6 @@
 ##Front-end Challenge for vhs lab
 
-#### Live url : `https://explore-block.web.app`
+#### Live url : https://explore-block.web.app
 # library used
  - Ether.js
  - Material UI
