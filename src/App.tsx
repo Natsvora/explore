@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Navbar from './component/Navbar/Navbar';
 import {
@@ -12,6 +12,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import Transaction from './component/Transaction/Transaction';
 import Block from './component/Block/Block';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { ICustomWindow } from './common/types';
+import Alert from '@material-ui/lab/Alert';
 
 const theme = createMuiTheme({
   palette: {
@@ -31,20 +33,39 @@ const theme = createMuiTheme({
 });
 
 function App(): JSX.Element {
+  const [alert, setAlert] = useState(false);
+
+  useEffect(() => {
+    if (!(window as ICustomWindow).ethereum) setAlert(true);
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Navbar></Navbar>
-        <Switch>
-          <Route exact path='/' render={() => <Redirect to='/block' />} />
-          <Route exact path='/block'>
-            <Block />
-          </Route>
-          <Route path='/txn/:id?'>
-            <Transaction />
-          </Route>
-        </Switch>
+        {alert && (
+          <Alert
+            variant='filled'
+            severity='error'
+            onClose={() => {
+              return;
+            }}
+          >
+            No meta mask found! Please install and refresh the page!!!
+          </Alert>
+        )}
+        {!alert && (
+          <Switch>
+            <Route exact path='/' render={() => <Redirect to='/block' />} />
+            <Route exact path='/block'>
+              <Block />
+            </Route>
+            <Route path='/txn/:id?'>
+              <Transaction />
+            </Route>
+          </Switch>
+        )}
       </Router>
     </ThemeProvider>
   );

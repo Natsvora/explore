@@ -5,9 +5,15 @@ import {
   TransactionState,
 } from './transaction.types';
 
-const provider = new ethers.providers.Web3Provider(
-  (window as { [key: string]: any }).ethereum
-);
+let provider = ethers.providers.getDefaultProvider();
+
+try {
+  provider = new ethers.providers.Web3Provider(
+    (window as { [key: string]: any }).ethereum
+  );
+} catch (e) {
+  // error
+}
 
 const initialState: TransactionState = {
   transactions: [],

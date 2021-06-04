@@ -3,10 +3,15 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
 import { BlockState, SerializeBlock } from './block.types';
 
-//TODO:
-const provider = new ethers.providers.Web3Provider(
-  (window as { [key: string]: any }).ethereum
-);
+let provider = ethers.providers.getDefaultProvider();
+
+try {
+  provider = new ethers.providers.Web3Provider(
+    (window as { [key: string]: any }).ethereum
+  );
+} catch (e) {
+  // error
+}
 
 const initialState: BlockState = {
   blocks: [],
