@@ -105,7 +105,7 @@ function DataTable(props: defaultProps): JSX.Element {
           : undefined,
       }}
       onCellDoubleClick={(a) =>
-        a.colDef.copyToClipBoard
+        (a.colDef as any).copyToClipBoard
           ? navigator.clipboard.writeText(a.value as string)
           : undefined
       }

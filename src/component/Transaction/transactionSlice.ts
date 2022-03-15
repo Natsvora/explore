@@ -38,7 +38,7 @@ export const fetchTransactionAsync = createAsyncThunk(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           id: (transaction as any).transactionIndex,
           timestamp: txList.timestamp,
-          gasPrice: transaction.gasPrice.toNumber(),
+          gasPrice: transaction.gasPrice?.toNumber() as number, 
           gasLimit: transaction.gasLimit.toNumber(),
           value: transaction.value.toHexString(),
         });

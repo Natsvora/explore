@@ -12,7 +12,7 @@ import Transaction from './component/Transaction/Transaction';
 import Block from './component/Block/Block';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ICustomWindow } from './common/types';
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/lab/Alert';
 
 const theme = createMuiTheme({
   palette: {
